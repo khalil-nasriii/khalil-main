@@ -1,29 +1,40 @@
 package tn.esprit.autoloc.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import java.util.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Agence {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAgence;
+
     private String nom;
     private String ville;
     private String adresse;
     private String telephone;
 
-    // 1 agence -> plusieurs employés
+    // 1 agence -> plusieurs employés (côté inverse, Employe.agence est propriétaire)
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
     @JsonIgnore
-    @ToString.Exclude
     private List<Employe> employes = new ArrayList<>();
 
-    // 1 agence -> plusieurs véhicules
+    // 1 agence -> plusieurs véhicules (côté inverse, Vehicule.agence est propriétaire)
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
     @JsonIgnore
-    @ToString.Exclude
     private List<Vehicule> vehicules = new ArrayList<>();
 }

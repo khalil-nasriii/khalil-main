@@ -1,13 +1,27 @@
 package tn.esprit.autoloc.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Reservation {
 
     @Id
@@ -28,6 +42,7 @@ public class Reservation {
     @JoinColumn(name = "vehicule_id")
     private Vehicule vehicule;
 
+    // côté propriétaire de l'association Reservation-Contrat (porte contrat_id)
     @OneToOne
     @JoinColumn(name = "contrat_id")
     private Contrat contrat;

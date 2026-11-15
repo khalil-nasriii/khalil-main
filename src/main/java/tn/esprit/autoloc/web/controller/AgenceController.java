@@ -1,9 +1,12 @@
 package tn.esprit.autoloc.web.controller;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,39 +18,60 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.service.IAgenceService;
-@Tag(name= "Gestion Agence")
+import tn.esprit.autoloc.web.dto.AgenceDTO;
+
+@Tag(name = "Agences", description = "Gestion des agences")
 @RestController
-@RequestMapping("/api/agences")
+@RequestMapping("/agences")
 @RequiredArgsConstructor
 public class AgenceController {
 
-    private final IAgenceService service;
-    @Operation(description = "ajouter un objet agence dans la BD")
-    @PostMapping("/api/add")
-    public ResponseEntity<Agence> create(@RequestBody Agence entite) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(entite));
+    private final IAgenceService agenceService;
+
+    @Operation(summary = "Lister les agences")
+    @ApiResponse(responseCode = "200", description = "Liste renvoyée")
+    @GetMapping
+    public ResponseEntity<List<AgenceDTO>> findAll() {
+        return ResponseEntity.ok(agenceService.findAll());
     }
 
-    @GetMapping("getByID/{id}")
-    public Agence findById(@PathVariable Long id) {
-        return service.findById(id);
+    @Operation(summary = "Consulter une agence")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Agence trouvé(e)"),
+            @ApiResponse(responseCode = "404", description = "Agence introuvable")})
+    @GetMapping("/{id}")
+    public ResponseEntity<AgenceDTO> findById(@Parameter(description = "Identifiant") @PathVariable Long id) {
+        return ResponseEntity.ok(agenceService.findById(id));
     }
 
-    @GetMapping("/getAll")
-    public List<Agence> findAll() {
-        return service.findAll();
+    @Operation(summary = "Créer une agence")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Agence créé(e)"),
+            @ApiResponse(responseCode = "400", description = "Données invalides")})
+    @PostMapping
+    public ResponseEntity<AgenceDTO> create(@Valid @RequestBody AgenceDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(agenceService.create(dto));
     }
 
-    @PutMapping("/update/{id}")
-    public Agence update(@PathVariable Long id, @RequestBody Agence entite) {
-        return service.update(id, entite);
+    @Operation(summary = "Modifier une agence")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Agence modifié(e)"),
+            @ApiResponse(responseCode = "400", description = "Données invalides"),
+            @ApiResponse(responseCode = "404", description = "Agence introuvable")})
+    @PutMapping("/{id}")
+    public ResponseEntity<AgenceDTO> update(@Parameter(description = "Identifiant") @PathVariable Long id,
+                                        @Valid @RequestBody AgenceDTO dto) {
+        return ResponseEntity.ok(agenceService.update(id, dto));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        service.deleteById(id);
+    @Operation(summary = "Supprimer une agence")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Agence supprimé(e)"),
+            @ApiResponse(responseCode = "404", description = "Agence introuvable")})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@Parameter(description = "Identifiant") @PathVariable Long id) {
+        agenceService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

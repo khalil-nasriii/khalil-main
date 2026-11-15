@@ -1,16 +1,35 @@
 package tn.esprit.autoloc.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
-import java.util.*;
-import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Vehicule {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVehicule;
+
     private String immatriculation;
     private String marque;
     private String modele;
@@ -23,6 +42,7 @@ public class Vehicule {
     @Enumerated(EnumType.STRING)
     private StatutVehicule statut;
 
+    // côté propriétaire de l'association Agence-Vehicule (porte agence_id)
     @ManyToOne
     @JoinColumn(name = "agence_id")
     private Agence agence;
@@ -41,5 +61,6 @@ public class Vehicule {
             joinColumns = @JoinColumn(name = "vehicule_id"),
             inverseJoinColumns = @JoinColumn(name = "equipement_id")
     )
+    @JsonIgnore
     private List<Equipement> equipements = new ArrayList<>();
 }

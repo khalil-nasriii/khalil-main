@@ -1,11 +1,15 @@
 package tn.esprit.autoloc.service;
 
 import java.util.List;
-import tn.esprit.autoloc.domain.Paiement;
+import tn.esprit.autoloc.web.dto.PaiementDTO;
 
+/**
+ * Lecture seule : la création et la suppression d'un paiement passent par
+ * le Contrat (composition, voir IContratService).
+ */
 public interface IPaiementService {
 
-    Paiement findById(Long id);
+    PaiementDTO findById(Long id);
 
-    List<Paiement> findAll();
+    List<PaiementDTO> findAll();
 }

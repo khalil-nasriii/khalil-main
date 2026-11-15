@@ -1,16 +1,28 @@
 package tn.esprit.autoloc.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
-import java.util.*;
-import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Client {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idClient;
+
     private String nom;
     private String prenom;
     private String email;
@@ -20,6 +32,5 @@ public class Client {
 
     @OneToMany(mappedBy = "client")
     @JsonIgnore
-    @ToString.Exclude
     private List<Reservation> reservations = new ArrayList<>();
 }
