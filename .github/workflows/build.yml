@@ -36,6 +36,29 @@ jobs:
           chmod +x mvnw
           ./mvnw -B test
 
+      - name: Démarrer l'API
+        run: |
+          ./mvnw -B -q spring-boot:run > app.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -s -o /dev/null http://localhost:8082/api/agences && break
+            sleep 2
+          done
+
+      - name: Collection Postman (Newman)
+        run: |
+          npx --yes newman run postman/collections/AutoLoc.postman_collection.json \
+            -e postman/environments/local.postman_environment.json \
+            --reporters cli
+
+      - name: Swagger / OpenAPI disponible
+        run: |
+          curl -sf http://localhost:8082/api/v3/api-docs | head -c 300; echo
+          curl -sfL -o /dev/null -w "swagger-ui %{http_code}\n" http://localhost:8082/api/swagger-ui.html
+
+      - name: Logs de l'API
+        if: always()
+        run: tail -n 80 app.log || true
+
       - name: Rapports de tests
         if: always()
         uses: actions/upload-artifact@v4
