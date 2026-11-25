@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.service.IAgenceService;
 import tn.esprit.autoloc.web.dto.AgenceDTO;
@@ -73,5 +74,28 @@ public class AgenceController {
     public ResponseEntity<Void> deleteById(@Parameter(description = "Identifiant") @PathVariable Long id) {
         agenceService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ====================== Atelier 8 — recherches ======================
+
+    @Operation(summary = "Première agence d'une ville (findFirstByVille...)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Agence trouvée"),
+            @ApiResponse(responseCode = "404", description = "Aucune agence dans cette ville")})
+    @GetMapping("/ville")
+    public ResponseEntity<AgenceDTO> findByVille(@RequestParam String ville) {
+        return ResponseEntity.ok(agenceService.findByVille(ville));
+    }
+
+    @Operation(summary = "Toutes les agences d'une ville (findByVille)")
+    @GetMapping("/ville/toutes")
+    public ResponseEntity<List<AgenceDTO>> findAllByVille(@RequestParam String ville) {
+        return ResponseEntity.ok(agenceService.findAllByVille(ville));
+    }
+
+    @Operation(summary = "Agences dont le nom contient une chaîne (findByNomContaining)")
+    @GetMapping("/recherche")
+    public ResponseEntity<List<AgenceDTO>> findByNom(@RequestParam String nom) {
+        return ResponseEntity.ok(agenceService.findByNomContaining(nom));
     }
 }

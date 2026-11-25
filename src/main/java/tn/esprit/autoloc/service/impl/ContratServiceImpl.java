@@ -13,6 +13,7 @@ import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IContratRepository;
 import tn.esprit.autoloc.repository.IReservationRepository;
 import tn.esprit.autoloc.service.IContratService;
+import tn.esprit.autoloc.web.dto.ChiffreAffaireAgenceDTO;
 import tn.esprit.autoloc.web.dto.ContratDTO;
 import tn.esprit.autoloc.web.dto.PaiementDTO;
 import tn.esprit.autoloc.web.mapper.ContratMapper;
@@ -144,5 +145,22 @@ public class ContratServiceImpl implements IContratService {
     private void valider(ContratDTO dto) {
         Regles.exigerPositifOuNul(dto.getMontantTotal(),
                 "Le montant total est obligatoire et ne peut pas être négatif");
+    }
+
+    // ---------- Atelier 8 — JPQL ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ChiffreAffaireAgenceDTO> chiffreAffaireParAgence() {
+        return contratRepository.chiffreAffaireParAgence();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ContratDTO> trouverContratsAEcheanceProche(LocalDate aujourdhui, LocalDate dateLimite) {
+        Regles.exigerPeriode(aujourdhui, dateLimite);
+        return contratRepository.trouverContratsAEcheanceProche(aujourdhui, dateLimite).stream()
+                .map(contratMapper::toDto)
+                .toList();
     }
 }

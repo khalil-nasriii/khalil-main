@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.web.dto.ApiError;
 
@@ -41,6 +43,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiError> jsonIllisible(HttpMessageNotReadableException ex) {
         return erreur(HttpStatus.BAD_REQUEST, "Corps de requête JSON invalide", List.of());
+    }
+
+    /** Atelier 8 : paramètre de recherche manquant (?ville=, ?statut=...). */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> parametreManquant(MissingServletRequestParameterException ex) {
+        return erreur(HttpStatus.BAD_REQUEST, "Paramètre obligatoire manquant : " + ex.getParameterName(), List.of());
+    }
+
+    /** Atelier 8 : valeur de paramètre invalide (statut inconnu, date mal formée, id non numérique). */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> parametreInvalide(MethodArgumentTypeMismatchException ex) {
+        return erreur(HttpStatus.BAD_REQUEST, "Valeur invalide pour le paramètre : " + ex.getName(), List.of());
     }
 
     /** État incohérent : désaffecter un véhicule sans agence, annuler deux fois... */

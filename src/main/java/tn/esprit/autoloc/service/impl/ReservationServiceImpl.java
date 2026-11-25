@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Client;
@@ -20,6 +21,7 @@ import tn.esprit.autoloc.service.factory.TarificationStrategyFactory;
 import tn.esprit.autoloc.service.observer.ReservationSubject;
 import tn.esprit.autoloc.web.dto.ReservationRequestDTO;
 import tn.esprit.autoloc.web.dto.ReservationResponseDTO;
+import tn.esprit.autoloc.web.dto.TopClientDTO;
 import tn.esprit.autoloc.web.mapper.ReservationMapper;
 
 @Slf4j
@@ -159,5 +161,63 @@ public class ReservationServiceImpl implements IReservationService {
         Regles.exigerNonNul(dto.getDateFin(), "La date de fin est obligatoire");
         Regles.exigerFinApresDebut(dto.getDateDebut(), dto.getDateFin(),
                 "La date de fin ne peut pas être antérieure à la date de début");
+    }
+
+    // ---------- Atelier 8 — recherches (méthodes dérivées) ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> findByClient(Long clientId) {
+        return versReponses(reservationRepository.findByClientIdClient(clientId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> findByVehiculeHorsStatut(Long vehiculeId, StatutReservation statutExclu) {
+        return versReponses(reservationRepository.findByVehicule_IdVehiculeAndStatutNot(vehiculeId, statutExclu));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> findByStatut(StatutReservation statut) {
+        return versReponses(reservationRepository.findByStatut(statut));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> findByDateDebutEntre(LocalDate debut, LocalDate fin) {
+        Regles.exigerPeriode(debut, fin);
+        return versReponses(reservationRepository.findByDateDebutBetween(debut, fin));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> findByDateFinApres(LocalDate date) {
+        Regles.exigerNonNul(date, "La date est obligatoire");
+        return versReponses(reservationRepository.findByDateFinAfter(date));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponseDTO> findByStatutAndAgence(StatutReservation statut, Long agenceId) {
+        return versReponses(reservationRepository.findByStatutAndVehiculeAgenceIdAgence(statut, agenceId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByVehiculeAndStatut(Long vehiculeId, StatutReservation statut) {
+        return reservationRepository.existsByVehicule_IdVehiculeAndStatut(vehiculeId, statut);
+    }
+
+    // ---------- Atelier 8 — agrégation JPQL ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TopClientDTO> topClients(Pageable pageable) {
+        return reservationRepository.topClients(pageable);
+    }
+
+    private List<ReservationResponseDTO> versReponses(List<Reservation> reservations) {
+        return reservations.stream().map(this::versReponse).toList();
     }
 }

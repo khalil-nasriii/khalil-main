@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tn.esprit.autoloc.domain.RoleEmploye;
 import tn.esprit.autoloc.service.IEmployeService;
 import tn.esprit.autoloc.web.dto.EmployeDTO;
 
@@ -95,5 +97,26 @@ public class EmployeController {
     public ResponseEntity<EmployeDTO> desaffecterDeAgence(
             @Parameter(description = "Identifiant de l'employé") @PathVariable Long employeId) {
         return ResponseEntity.ok(employeService.desaffecterEmployeDeAgence(employeId));
+    }
+
+    // ====================== Atelier 8 — recherches ======================
+
+    @Operation(summary = "Employés d'une agence désignée par son nom (findByAgenceNom)")
+    @GetMapping("/agence")
+    public ResponseEntity<List<EmployeDTO>> findByAgenceNom(@RequestParam String nom) {
+        return ResponseEntity.ok(employeService.findByAgenceNom(nom));
+    }
+
+    @Operation(summary = "Employés d'une agence ayant un rôle (findByAgence_IdAgenceAndRole)")
+    @GetMapping("/agence/{agenceId}")
+    public ResponseEntity<List<EmployeDTO>> findByAgenceAndRole(@PathVariable Long agenceId,
+                                                                @RequestParam RoleEmploye role) {
+        return ResponseEntity.ok(employeService.findByAgenceAndRole(agenceId, role));
+    }
+
+    @Operation(summary = "Employés dont le nom contient une chaîne (findByNomContaining)")
+    @GetMapping("/recherche")
+    public ResponseEntity<List<EmployeDTO>> findByNom(@RequestParam String nom) {
+        return ResponseEntity.ok(employeService.findByNomContaining(nom));
     }
 }

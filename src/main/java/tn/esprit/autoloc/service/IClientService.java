@@ -14,4 +14,15 @@ public interface IClientService {
     ClientDTO update(Long id, ClientDTO dto);
 
     void deleteById(Long id);
+
+
+    // ---------- Atelier 8 — recherches ----------
+
+    ClientDTO findByEmail(String email);
+
+    ClientDTO findByNumPermis(String numPermis);
+
+    List<ClientDTO> findByNomContaining(String nom);
+
+    boolean existsByEmail(String email);
 }

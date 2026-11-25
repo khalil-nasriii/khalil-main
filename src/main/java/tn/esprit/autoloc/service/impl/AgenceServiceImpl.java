@@ -68,4 +68,26 @@ public class AgenceServiceImpl implements IAgenceService {
         Regles.exigerNonVide(dto.getNom(), "Le nom de l'agence est obligatoire");
         Regles.exigerNonVide(dto.getVille(), "La ville de l'agence est obligatoire");
     }
+
+    // ---------- Atelier 8 ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public AgenceDTO findByVille(String ville) {
+        return agenceRepository.findFirstByVilleOrderByIdAgenceAsc(ville)
+                .map(agenceMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Aucune agence dans la ville " + ville));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AgenceDTO> findAllByVille(String ville) {
+        return agenceRepository.findByVille(ville).stream().map(agenceMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AgenceDTO> findByNomContaining(String nom) {
+        return agenceRepository.findByNomContaining(nom).stream().map(agenceMapper::toDto).toList();
+    }
 }

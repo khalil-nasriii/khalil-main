@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.service.IContratService;
 import tn.esprit.autoloc.web.dto.ContratDTO;
@@ -98,5 +101,19 @@ public class ContratController {
             @Parameter(description = "Identifiant du paiement") @PathVariable Long paiementId) {
         contratService.retirerPaiement(id, paiementId);
         return ResponseEntity.noContent().build();
+    }
+
+    // ====================== Atelier 8 — JPQL ======================
+
+    @Operation(summary = "Contrats valides dont l'échéance (fin de la réservation) tombe dans l'intervalle")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Liste, éventuellement vide"),
+            @ApiResponse(responseCode = "400", description = "dateLimite antérieure à aujourdhui")})
+    @GetMapping("/echeance")
+    public ResponseEntity<List<ContratDTO>> echeanceProche(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate aujourdhui,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateLimite) {
+        LocalDate reference = aujourdhui == null ? LocalDate.now() : aujourdhui;
+        return ResponseEntity.ok(contratService.trouverContratsAEcheanceProche(reference, dateLimite));
     }
 }

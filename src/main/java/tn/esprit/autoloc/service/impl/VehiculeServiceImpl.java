@@ -1,10 +1,15 @@
 package tn.esprit.autoloc.service.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.CategorieVehicule;
 import tn.esprit.autoloc.domain.StatutVehicule;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
@@ -109,5 +114,86 @@ public class VehiculeServiceImpl implements IVehiculeService {
     private void valider(VehiculeDTO dto) {
         Regles.exigerPositifOuNul(dto.getTarifJournalier(),
                 "Le tarif journalier est obligatoire et ne peut pas être négatif");
+    }
+
+    // ---------- Atelier 8 — Partie I ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findByAgenceVille(String ville) {
+        return versDto(vehiculeRepository.findByAgenceVille(ville));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findByStatutAndAgence(StatutVehicule statut, Long agenceId) {
+        return versDto(vehiculeRepository.findByStatutAndAgence_IdAgence(statut, agenceId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<VehiculeDTO> findByStatut(StatutVehicule statut, Pageable pageable) {
+        return vehiculeRepository.findByStatut(statut, pageable).map(vehiculeMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findByVilleAndCategorie(String ville, CategorieVehicule categorie) {
+        return versDto(vehiculeRepository.findByAgence_VilleAndCategorie(ville, categorie));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean aLeStatut(Long vehiculeId, StatutVehicule statut) {
+        return vehiculeRepository.existsByIdVehiculeAndStatut(vehiculeId, statut);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long countByStatut(StatutVehicule statut) {
+        return vehiculeRepository.countByStatut(statut);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findByTarifInferieurA(BigDecimal tarif) {
+        Regles.exigerNonNul(tarif, "Le tarif de comparaison est obligatoire");
+        return versDto(vehiculeRepository.findByTarifJournalierLessThan(tarif));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findByTarifSuperieurA(BigDecimal tarif) {
+        Regles.exigerNonNul(tarif, "Le tarif de comparaison est obligatoire");
+        return versDto(vehiculeRepository.findByTarifJournalierGreaterThan(tarif));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> findAllTriesParTarif() {
+        return versDto(vehiculeRepository.findAllByOrderByTarifJournalierAsc());
+    }
+
+    // ---------- Atelier 8 — Partie II (JPQL) ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> rechercherVehiculesDisponibles(String ville, CategorieVehicule categorie,
+                                                            LocalDate dateDebut, LocalDate dateFin) {
+        Regles.exigerNonVide(ville, "La ville est obligatoire");
+        Regles.exigerNonNul(categorie, "La catégorie est obligatoire");
+        Regles.exigerPeriode(dateDebut, dateFin);
+        return versDto(vehiculeRepository.rechercherVehiculesDisponibles(ville, categorie, dateDebut, dateFin));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeDTO> trouverVehiculesAReleaser(LocalDate aujourdhui) {
+        Regles.exigerNonNul(aujourdhui, "La date de référence est obligatoire");
+        return versDto(vehiculeRepository.trouverVehiculesAReleaser(aujourdhui));
+    }
+
+    private List<VehiculeDTO> versDto(List<Vehicule> vehicules) {
+        return vehicules.stream().map(vehiculeMapper::toDto).toList();
     }
 }

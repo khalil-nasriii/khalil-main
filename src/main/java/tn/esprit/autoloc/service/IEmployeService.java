@@ -1,6 +1,7 @@
 package tn.esprit.autoloc.service;
 
 import java.util.List;
+import tn.esprit.autoloc.domain.RoleEmploye;
 import tn.esprit.autoloc.web.dto.EmployeDTO;
 
 public interface IEmployeService {
@@ -20,4 +21,13 @@ public interface IEmployeService {
 
     /** Atelier 7 : détache un employé de son agence (IllegalStateException s'il n'en a pas). */
     EmployeDTO desaffecterEmployeDeAgence(Long employeId);
+
+
+    // ---------- Atelier 8 — recherches ----------
+
+    List<EmployeDTO> findByAgenceNom(String nomAgence);
+
+    List<EmployeDTO> findByAgenceAndRole(Long agenceId, RoleEmploye role);
+
+    List<EmployeDTO> findByNomContaining(String nom);
 }

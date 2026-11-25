@@ -1,10 +1,14 @@
 package tn.esprit.autoloc.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import tn.esprit.autoloc.domain.Client;
 import tn.esprit.autoloc.domain.Reservation;
+import tn.esprit.autoloc.domain.StatutReservation;
 import tn.esprit.autoloc.web.dto.ReservationRequestDTO;
 import tn.esprit.autoloc.web.dto.ReservationResponseDTO;
+import tn.esprit.autoloc.web.dto.TopClientDTO;
 
 public interface IReservationService {
 
@@ -29,4 +33,25 @@ public interface IReservationService {
 
     /** Annule une réservation existante et notifie tous les observateurs. */
     Reservation annulerReservation(Reservation reservation);
+
+
+    // ---------- Atelier 8 — recherches (méthodes dérivées) ----------
+
+    List<ReservationResponseDTO> findByClient(Long clientId);
+
+    List<ReservationResponseDTO> findByVehiculeHorsStatut(Long vehiculeId, StatutReservation statutExclu);
+
+    List<ReservationResponseDTO> findByStatut(StatutReservation statut);
+
+    List<ReservationResponseDTO> findByDateDebutEntre(LocalDate debut, LocalDate fin);
+
+    List<ReservationResponseDTO> findByDateFinApres(LocalDate date);
+
+    List<ReservationResponseDTO> findByStatutAndAgence(StatutReservation statut, Long agenceId);
+
+    boolean existsByVehiculeAndStatut(Long vehiculeId, StatutReservation statut);
+
+    // ---------- Atelier 8 — agrégation JPQL ----------
+
+    List<TopClientDTO> topClients(Pageable pageable);
 }

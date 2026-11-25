@@ -5,12 +5,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.service.IPaiementService;
 import tn.esprit.autoloc.web.dto.PaiementDTO;
@@ -41,5 +44,21 @@ public class PaiementController {
     @GetMapping("/{id}")
     public ResponseEntity<PaiementDTO> findById(@Parameter(description = "Identifiant") @PathVariable Long id) {
         return ResponseEntity.ok(paiementService.findById(id));
+    }
+
+    // ====================== Atelier 8 — recherches ======================
+
+    @Operation(summary = "Paiements d'un contrat (findByContrat_IdContrat)")
+    @GetMapping("/contrat/{contratId}")
+    public ResponseEntity<List<PaiementDTO>> findByContrat(@PathVariable Long contratId) {
+        return ResponseEntity.ok(paiementService.findByContrat(contratId));
+    }
+
+    @Operation(summary = "Paiements d'une période (findByDatePaiementBetween)")
+    @GetMapping("/periode")
+    public ResponseEntity<List<PaiementDTO>> findByPeriode(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate debut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fin) {
+        return ResponseEntity.ok(paiementService.findByDatePaiementEntre(debut, fin));
     }
 }

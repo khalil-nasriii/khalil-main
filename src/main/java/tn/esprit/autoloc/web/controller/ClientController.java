@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.service.IClientService;
 import tn.esprit.autoloc.web.dto.ClientDTO;
@@ -73,5 +74,34 @@ public class ClientController {
     public ResponseEntity<Void> deleteById(@Parameter(description = "Identifiant") @PathVariable Long id) {
         clientService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ====================== Atelier 8 — recherches ======================
+
+    @Operation(summary = "Client par email (findByEmail)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Client trouvé"),
+            @ApiResponse(responseCode = "404", description = "Aucun client avec cet email")})
+    @GetMapping("/email")
+    public ResponseEntity<ClientDTO> findByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(clientService.findByEmail(email));
+    }
+
+    @Operation(summary = "Client par numéro de permis (findByNumPermis)")
+    @GetMapping("/permis")
+    public ResponseEntity<ClientDTO> findByNumPermis(@RequestParam String numPermis) {
+        return ResponseEntity.ok(clientService.findByNumPermis(numPermis));
+    }
+
+    @Operation(summary = "Clients dont le nom contient une chaîne (findByNomContaining)")
+    @GetMapping("/recherche")
+    public ResponseEntity<List<ClientDTO>> findByNom(@RequestParam String nom) {
+        return ResponseEntity.ok(clientService.findByNomContaining(nom));
+    }
+
+    @Operation(summary = "Un client existe-t-il avec cet email ? (existsByEmail)")
+    @GetMapping("/existe")
+    public ResponseEntity<Boolean> existsByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(clientService.existsByEmail(email));
     }
 }

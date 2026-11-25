@@ -409,7 +409,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.benali@mail.tn\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\"\n}",
+              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.{{$timestamp}}@mail.tn\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -511,7 +511,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.benali@mail.tn\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\",\n  \"id\": 5\n}",
+              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.{{$timestamp}}@mail.tn\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\",\n  \"id\": 5\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -596,7 +596,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.benali@gmail.com\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\"\n}",
+              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.maj.{{$timestamp}}@mail.tn\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -639,7 +639,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.benali@gmail.com\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\"\n}",
+              "raw": "{\n  \"nom\": \"Ben Ali\",\n  \"prenom\": \"Ahmed\",\n  \"email\": \"ahmed.maj.{{$timestamp}}@mail.tn\",\n  \"telephone\": \"20111222\",\n  \"numPermis\": \"P-100234\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3725,6 +3725,2429 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Atelier 8 — Partie I : Query Methods",
+      "item": [
+        {
+          "name": "Préparer : agence",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Agence Postman8\",\n  \"ville\": \"{{a8ville}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const f = d => d.toISOString().slice(0, 10);",
+                  "const j = n => { const d = new Date(); d.setDate(d.getDate() + n); return f(d); };",
+                  "const t = Date.now();",
+                  "pm.environment.set(\"a8ville\", \"VillePostman\" + t);",
+                  "pm.environment.set(\"a8email\", \"client8.\" + t + \"@test.tn\");",
+                  "pm.environment.set(\"a8permis\", \"P8-\" + t);",
+                  "pm.environment.set(\"a8debut\", j(30));",
+                  "pm.environment.set(\"a8fin\", j(35));",
+                  "pm.environment.set(\"a8finPlus3\", j(38));",
+                  "pm.environment.set(\"a8veille\", j(29));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"a8agenceId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Préparer : véhicule BERLINE 100",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"808 TUN 0001\",\n  \"marque\": \"Peugeot\",\n  \"modele\": \"508\",\n  \"categorie\": \"BERLINE\",\n  \"tarifJournalier\": 100,\n  \"statut\": \"DISPONIBLE\",\n  \"agenceId\": {{a8agenceId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"a8v1\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Préparer : véhicule BERLINE 200",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"808 TUN 0002\",\n  \"marque\": \"Skoda\",\n  \"modele\": \"Superb\",\n  \"categorie\": \"BERLINE\",\n  \"tarifJournalier\": 200,\n  \"statut\": \"DISPONIBLE\",\n  \"agenceId\": {{a8agenceId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"a8v2\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Préparer : client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Postman8Nom\",\n  \"prenom\": \"Lina\",\n  \"email\": \"{{a8email}}\",\n  \"telephone\": \"20888888\",\n  \"numPermis\": \"{{a8permis}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"a8clientId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Préparer : réservation (véhicule 100)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientId\": {{a8clientId}},\n  \"vehiculeId\": {{a8v1}},\n  \"dateDebut\": \"{{a8debut}}\",\n  \"dateFin\": \"{{a8fin}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"a8resId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Préparer : contrat valide 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateSignature\": \"{{a8debut}}\",\n  \"montantTotal\": 400,\n  \"valide\": true,\n  \"reservationId\": {{a8resId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));",
+                  "pm.environment.set(\"a8contratId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Préparer : paiement 150 (15/06/2030)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/{{a8contratId}}/paiements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "{{a8contratId}}",
+                "paiements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"montant\": 150,\n  \"datePaiement\": \"2030-06-15\",\n  \"modePaiement\": \"CARTE\",\n  \"contratId\": {{a8contratId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/ville",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/ville?ville={{a8ville}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "ville"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"2 véhicules\", () => pm.expect(j.length).to.eql(2));",
+                  "pm.test(\"Tous dans l'agence de la ville\", () => j.forEach(v => pm.expect(v.agenceId).to.eql(pm.environment.get(\"a8agenceId\"))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/ville inconnue (liste vide)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/ville?ville=VilleInexistante8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "ville"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "VilleInexistante8"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Liste vide\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/statut paginé",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/statut?statut=DISPONIBLE&page=0&size=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "statut"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "DISPONIBLE"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "const meta = j.page || j;",
+                  "pm.test(\"Au plus 5 éléments\", () => pm.expect(j.content.length).to.be.at.most(5));",
+                  "pm.test(\"Métadonnées de pagination\", () => { pm.expect(meta.size).to.eql(5); pm.expect(meta.number).to.eql(0); pm.expect(meta.totalElements).to.be.at.least(2); });",
+                  "pm.test(\"Filtrage sur DISPONIBLE\", () => j.content.forEach(v => pm.expect(v.statut).to.eql(\"DISPONIBLE\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/recherche/statut page 2 taille 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/recherche/statut?statut=DISPONIBLE&page=1&size=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "recherche",
+                "statut"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "DISPONIBLE"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"1 élément, page 1\", () => { pm.expect(j.content.length).to.eql(1); pm.expect((j.page || j).number).to.eql(1); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/statut valeur inconnue (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/statut?statut=VOLE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "statut"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "VOLE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/recherche ville + BERLINE",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/recherche?ville={{a8ville}}&categorie=BERLINE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "recherche"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"2 berlines\", () => pm.expect(pm.response.json().length).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/recherche ville + SUV (vide)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/recherche?ville={{a8ville}}&categorie=SUV",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "recherche"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "SUV"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Liste vide\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/agence/{id}?statut",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/agence/{{a8agenceId}}?statut=DISPONIBLE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "agence",
+                "{{a8agenceId}}"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "DISPONIBLE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"2 véhicules\", () => pm.expect(pm.response.json().length).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/{id}/a-le-statut (true)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{a8v1}}/a-le-statut?statut=DISPONIBLE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{a8v1}}",
+                "a-le-statut"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "DISPONIBLE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"true\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/{id}/a-le-statut (false)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{a8v1}}/a-le-statut?statut=MAINTENANCE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{a8v1}}",
+                "a-le-statut"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "MAINTENANCE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"false\", () => pm.expect(pm.response.json()).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/compteur",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/compteur?statut=DISPONIBLE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "compteur"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "DISPONIBLE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Au moins 2\", () => pm.expect(pm.response.json()).to.be.at.least(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/tarif-inferieur?tarif=150",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/tarif-inferieur?tarif=150",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "tarif-inferieur"
+              ],
+              "query": [
+                {
+                  "key": "tarif",
+                  "value": "150"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "const ids = j.map(x => x.id);",
+                  "pm.test(\"Contient 100, pas 200\", () => { pm.expect(ids).to.include(pm.environment.get(\"a8v1\")); pm.expect(ids).to.not.include(pm.environment.get(\"a8v2\")); });",
+                  "pm.test(\"Tous < 150\", () => j.forEach(v => pm.expect(v.tarifJournalier).to.be.below(150)));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/tarif-superieur?tarif=150",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/tarif-superieur?tarif=150",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "tarif-superieur"
+              ],
+              "query": [
+                {
+                  "key": "tarif",
+                  "value": "150"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "const ids = j.map(x => x.id);",
+                  "pm.test(\"Contient 200, pas 100\", () => { pm.expect(ids).to.include(pm.environment.get(\"a8v2\")); pm.expect(ids).to.not.include(pm.environment.get(\"a8v1\")); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/tries-par-tarif",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/tries-par-tarif",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "tries-par-tarif"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "const t = j.map(v => v.tarifJournalier).filter(x => x !== null);",
+                  "pm.test(\"Ordre croissant\", () => { for (let i = 1; i < t.length; i++) pm.expect(t[i - 1]).to.be.at.most(t[i]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET clients/email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/email?email={{a8email}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{a8email}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Bon client\", () => pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"a8clientId\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET clients/email inconnu (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/email?email=personne@nulle.part",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "personne@nulle.part"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET clients/permis",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/permis?numPermis={{a8permis}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "permis"
+              ],
+              "query": [
+                {
+                  "key": "numPermis",
+                  "value": "{{a8permis}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Bon client\", () => pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"a8clientId\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET clients/recherche?nom",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/recherche?nom=Postman8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "recherche"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Postman8"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Au moins 1\", () => pm.expect(pm.response.json().length).to.be.at.least(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET clients/existe (true)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/existe?email={{a8email}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "existe"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{a8email}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"true\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET clients/existe (false)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/existe?email=personne@nulle.part",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "existe"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "personne@nulle.part"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"false\", () => pm.expect(pm.response.json()).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST client avec email déjà utilisé (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Doublon\",\n  \"prenom\": \"Email\",\n  \"email\": \"{{a8email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET agences/ville",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences/ville?ville={{a8ville}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences",
+                "ville"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Bonne agence\", () => pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"a8agenceId\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET agences/ville inconnue (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences/ville?ville=VilleInexistante8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences",
+                "ville"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "VilleInexistante8"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET agences/recherche?nom",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences/recherche?nom=Postman8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences",
+                "recherche"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Postman8"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Au moins 1\", () => pm.expect(pm.response.json().length).to.be.at.least(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET employes/recherche (vide)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employes/recherche?nom=Inexistant8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "employes",
+                "recherche"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Inexistant8"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Liste vide\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET employes/agence?nom",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/employes/agence?nom=Agence Postman8",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "employes",
+                "agence"
+              ],
+              "query": [
+                {
+                  "key": "nom",
+                  "value": "Agence Postman8"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Tableau\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/client/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/client/{{a8clientId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "client",
+                "{{a8clientId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"1 réservation\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/statut",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/statut?statut=CONFIRMEE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "statut"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "CONFIRMEE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Contient la réservation\", () => pm.expect(j.map(r => r.id)).to.include(pm.environment.get(\"a8resId\")));",
+                  "pm.test(\"Toutes CONFIRMEE\", () => j.forEach(r => pm.expect(r.statut).to.eql(\"CONFIRMEE\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/periode",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/periode?debut={{a8debut}}&fin={{a8fin}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "periode"
+              ],
+              "query": [
+                {
+                  "key": "debut",
+                  "value": "{{a8debut}}"
+                },
+                {
+                  "key": "fin",
+                  "value": "{{a8fin}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Contient la réservation\", () => pm.expect(pm.response.json().map(r => r.id)).to.include(pm.environment.get(\"a8resId\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/periode inversée (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/periode?debut={{a8fin}}&fin={{a8debut}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "periode"
+              ],
+              "query": [
+                {
+                  "key": "debut",
+                  "value": "{{a8fin}}"
+                },
+                {
+                  "key": "fin",
+                  "value": "{{a8debut}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/agence/{id}?statut",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/agence/{{a8agenceId}}?statut=CONFIRMEE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "agence",
+                "{{a8agenceId}}"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "CONFIRMEE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"1 réservation\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/vehicule/{id}/existe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/vehicule/{{a8v1}}/existe?statut=CONFIRMEE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "vehicule",
+                "{{a8v1}}",
+                "existe"
+              ],
+              "query": [
+                {
+                  "key": "statut",
+                  "value": "CONFIRMEE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"true\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/vehicule/{id} (hors ANNULEE)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/vehicule/{{a8v2}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "vehicule",
+                "{{a8v2}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Aucune\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET paiements/contrat/{id}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/paiements/contrat/{{a8contratId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "paiements",
+                "contrat",
+                "{{a8contratId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"1 paiement\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET paiements/periode",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/paiements/periode?debut=2030-06-01&fin=2030-06-30",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "paiements",
+                "periode"
+              ],
+              "query": [
+                {
+                  "key": "debut",
+                  "value": "2030-06-01"
+                },
+                {
+                  "key": "fin",
+                  "value": "2030-06-30"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Contient le paiement du contrat\", () => pm.expect(pm.response.json().map(p => p.contratId)).to.include(pm.environment.get(\"a8contratId\")));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Atelier 8 — Partie II : JPQL",
+      "item": [
+        {
+          "name": "GET vehicules/disponibles (chevauchement)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/disponibles?ville={{a8ville}}&categorie=BERLINE&dateDebut={{a8debut}}&dateFin={{a8fin}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "{{a8debut}}"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "{{a8fin}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "const ids = j.map(x => x.id);",
+                  "pm.test(\"Seul le véhicule non réservé\", () => pm.expect(ids).to.eql([pm.environment.get(\"a8v2\")]));",
+                  "pm.test(\"Ville, catégorie, statut\", () => j.forEach(v => { pm.expect(v.categorie).to.eql(\"BERLINE\"); pm.expect(v.statut).to.not.eql(\"MAINTENANCE\"); pm.expect(v.agenceId).to.eql(pm.environment.get(\"a8agenceId\")); }));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/disponibles (bornes qui se touchent)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/disponibles?ville={{a8ville}}&categorie=BERLINE&dateDebut={{a8fin}}&dateFin={{a8finPlus3}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "{{a8fin}}"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "{{a8finPlus3}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Les 2 véhicules\", () => pm.expect(pm.response.json().map(v => v.id)).to.eql([pm.environment.get(\"a8v1\"), pm.environment.get(\"a8v2\")]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/disponibles (bornes qui se touchent, avant)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/disponibles?ville={{a8ville}}&categorie=BERLINE&dateDebut={{a8veille}}&dateFin={{a8debut}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "{{a8veille}}"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "{{a8debut}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Les 2 véhicules\", () => pm.expect(pm.response.json().length).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET jpql/vehicules/disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/jpql/vehicules/disponibles?ville={{a8ville}}&categorie=BERLINE&dateDebut={{a8debut}}&dateFin={{a8fin}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "jpql",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "{{a8debut}}"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "{{a8fin}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Seul le véhicule non réservé\", () => pm.expect(pm.response.json().map(v => v.id)).to.eql([pm.environment.get(\"a8v2\")]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/disponibles sans résultat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/disponibles?ville={{a8ville}}&categorie=UTILITAIRE&dateDebut={{a8debut}}&dateFin={{a8fin}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "UTILITAIRE"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "{{a8debut}}"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "{{a8fin}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Liste vide\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/disponibles période inversée (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/disponibles?ville={{a8ville}}&categorie=BERLINE&dateDebut={{a8fin}}&dateFin={{a8debut}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                },
+                {
+                  "key": "dateDebut",
+                  "value": "{{a8fin}}"
+                },
+                {
+                  "key": "dateFin",
+                  "value": "{{a8debut}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/disponibles paramètre manquant (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/disponibles?ville={{a8ville}}&categorie=BERLINE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "ville",
+                  "value": "{{a8ville}}"
+                },
+                {
+                  "key": "categorie",
+                  "value": "BERLINE"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET vehicules/a-liberer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/a-liberer?aujourdhui={{a8fin}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "a-liberer"
+              ],
+              "query": [
+                {
+                  "key": "aujourdhui",
+                  "value": "{{a8fin}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Contient le véhicule réservé\", () => pm.expect(pm.response.json().map(v => v.id)).to.include(pm.environment.get(\"a8v1\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/top-clients?limit=5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/top-clients?limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "top-clients"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Au plus 5\", () => pm.expect(j.length).to.be.at.most(5));",
+                  "pm.test(\"Champs du DTO\", () => j.forEach(c => pm.expect(c).to.have.all.keys(\"clientId\", \"nom\", \"prenom\", \"nombreReservations\")));",
+                  "pm.test(\"Ordre décroissant\", () => { for (let i = 1; i < j.length; i++) pm.expect(j[i - 1].nombreReservations).to.be.at.least(j[i].nombreReservations); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/top-clients?limit=1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/top-clients?limit=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "top-clients"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"1 ligne\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/top-clients?limit=0 (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/top-clients?limit=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "top-clients"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/chiffre-affaires-agences",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/chiffre-affaires-agences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "chiffre-affaires-agences"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "const a = j.find(x => x.agenceId === pm.environment.get(\"a8agenceId\"));",
+                  "pm.test(\"Agence présente avec 400\", () => { pm.expect(a).to.not.be.undefined; pm.expect(a.chiffreAffaires).to.eql(400); pm.expect(a.nomAgence).to.eql(\"Agence Postman8\"); });",
+                  "pm.test(\"Ordre décroissant\", () => { for (let i = 1; i < j.length; i++) pm.expect(j[i - 1].chiffreAffaires).to.be.at.least(j[i].chiffreAffaires); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET reservations/chiffre-affaires/agences (route du bilan)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/chiffre-affaires/agences",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "chiffre-affaires",
+                "agences"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET contrats/echeance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/echeance?aujourdhui={{a8debut}}&dateLimite={{a8fin}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "echeance"
+              ],
+              "query": [
+                {
+                  "key": "aujourdhui",
+                  "value": "{{a8debut}}"
+                },
+                {
+                  "key": "dateLimite",
+                  "value": "{{a8fin}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Contient le contrat\", () => pm.expect(pm.response.json().map(c => c.id)).to.include(pm.environment.get(\"a8contratId\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET contrats/echeance sans résultat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/echeance?aujourdhui=2099-01-01&dateLimite=2099-01-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "echeance"
+              ],
+              "query": [
+                {
+                  "key": "aujourdhui",
+                  "value": "2099-01-01"
+                },
+                {
+                  "key": "dateLimite",
+                  "value": "2099-01-31"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Liste vide\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyer : contrat",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contrats/{{a8contratId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contrats",
+                "{{a8contratId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyer : réservation",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/{{a8resId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservations",
+                "{{a8resId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyer : véhicule 1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{a8v1}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{a8v1}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyer : véhicule 2",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicules/{{a8v2}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "vehicules",
+                "{{a8v2}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyer : client",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clients/{{a8clientId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clients",
+                "{{a8clientId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nettoyer : agence",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agences/{{a8agenceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agences",
+                "{{a8agenceId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => pm.response.to.have.status(204));"
                 ]
               }
             }

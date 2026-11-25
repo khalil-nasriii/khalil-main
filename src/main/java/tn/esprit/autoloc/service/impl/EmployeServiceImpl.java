@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.domain.Employe;
+import tn.esprit.autoloc.domain.RoleEmploye;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 import tn.esprit.autoloc.repository.IEmployeRepository;
@@ -101,5 +102,27 @@ public class EmployeServiceImpl implements IEmployeService {
         Regles.exigerNonVide(dto.getNom(), "Le nom de l'employé est obligatoire");
         Regles.exigerNonVide(dto.getPrenom(), "Le prénom de l'employé est obligatoire");
         Regles.exigerNonNul(dto.getRole(), "Le rôle de l'employé est obligatoire");
+    }
+
+    // ---------- Atelier 8 ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EmployeDTO> findByAgenceNom(String nomAgence) {
+        return employeRepository.findByAgenceNom(nomAgence).stream().map(employeMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EmployeDTO> findByAgenceAndRole(Long agenceId, RoleEmploye role) {
+        return employeRepository.findByAgence_IdAgenceAndRole(agenceId, role).stream()
+                .map(employeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EmployeDTO> findByNomContaining(String nom) {
+        return employeRepository.findByNomContaining(nom).stream().map(employeMapper::toDto).toList();
     }
 }

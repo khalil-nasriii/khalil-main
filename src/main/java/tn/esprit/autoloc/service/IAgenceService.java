@@ -14,4 +14,14 @@ public interface IAgenceService {
     AgenceDTO update(Long id, AgenceDTO dto);
 
     void deleteById(Long id);
+
+
+    // ---------- Atelier 8 — recherches ----------
+
+    /** Première agence de la ville (404 si aucune). */
+    AgenceDTO findByVille(String ville);
+
+    List<AgenceDTO> findAllByVille(String ville);
+
+    List<AgenceDTO> findByNomContaining(String nom);
 }

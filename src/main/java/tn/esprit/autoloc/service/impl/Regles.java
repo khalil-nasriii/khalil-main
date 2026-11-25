@@ -51,4 +51,11 @@ final class Regles {
             throw new IllegalArgumentException(message);
         }
     }
+
+    /** Période de recherche : deux dates obligatoires, la fin ne précède pas le début. */
+    static void exigerPeriode(LocalDate debut, LocalDate fin) {
+        exigerNonNul(debut, "La date de début de la période est obligatoire");
+        exigerNonNul(fin, "La date de fin de la période est obligatoire");
+        exigerFinApresDebut(debut, fin, "La date de fin ne peut pas être antérieure à la date de début");
+    }
 }

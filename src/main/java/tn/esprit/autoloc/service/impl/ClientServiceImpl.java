@@ -26,6 +26,10 @@ public class ClientServiceImpl implements IClientService {
     public ClientDTO create(ClientDTO dto) {
         Regles.exigerNouveau(dto.getId(), RESSOURCE);
         valider(dto);
+        // Atelier 8 : existsByEmail garantit l'unicité de l'email (findByEmail renvoie un Optional)
+        if (clientRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalStateException("Un client existe déjà avec l'email " + dto.getEmail());
+        }
         Client client = clientMapper.toEntity(dto);
         if (client.getDateInscription() == null) {
             client.setDateInscription(LocalDate.now());
@@ -51,6 +55,9 @@ public class ClientServiceImpl implements IClientService {
     public ClientDTO update(Long id, ClientDTO dto) {
         Client existant = charger(id);
         valider(dto);
+        if (!dto.getEmail().equals(existant.getEmail()) && clientRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalStateException("Un client existe déjà avec l'email " + dto.getEmail());
+        }
         LocalDate dateInscription = existant.getDateInscription();
         clientMapper.updateEntity(dto, existant);
         if (existant.getDateInscription() == null) {
@@ -75,5 +82,37 @@ public class ClientServiceImpl implements IClientService {
     private void valider(ClientDTO dto) {
         Regles.exigerNonVide(dto.getNom(), "Le nom du client est obligatoire");
         Regles.exigerNonVide(dto.getEmail(), "L'e-mail du client est obligatoire");
+    }
+
+    // ---------- Atelier 8 ----------
+
+    @Override
+    @Transactional(readOnly = true)
+    public ClientDTO findByEmail(String email) {
+        return clientRepository.findByEmail(email)
+                .map(clientMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Aucun client avec l'email " + email));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ClientDTO findByNumPermis(String numPermis) {
+        return clientRepository.findByNumPermis(numPermis)
+                .map(clientMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Aucun client avec le permis " + numPermis));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClientDTO> findByNomContaining(String nom) {
+        return clientRepository.findByNomContaining(nom).stream()
+                .map(clientMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        return clientRepository.existsByEmail(email);
     }
 }

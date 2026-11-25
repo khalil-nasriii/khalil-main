@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,23 @@ public class PaiementServiceImpl implements IPaiementService {
     @Override
     public List<PaiementDTO> findAll() {
         return paiementRepository.findAll().stream()
+                .map(paiementMapper::toDto)
+                .toList();
+    }
+
+    // ---------- Atelier 8 ----------
+
+    @Override
+    public List<PaiementDTO> findByContrat(Long contratId) {
+        return paiementRepository.findByContrat_IdContrat(contratId).stream()
+                .map(paiementMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<PaiementDTO> findByDatePaiementEntre(LocalDate debut, LocalDate fin) {
+        Regles.exigerPeriode(debut, fin);
+        return paiementRepository.findByDatePaiementBetween(debut, fin).stream()
                 .map(paiementMapper::toDto)
                 .toList();
     }

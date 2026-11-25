@@ -1,7 +1,7 @@
 # AutoLoc API — Gestion de location de véhicules
 
-Projet Spring Boot des ateliers ASI 26-27 (Ateliers 3 à 7) : Spring Data JPA, couche Service (IoC/DI),
-API REST + Swagger, patrons GoF (Strategy, Factory, Observer), DTO + MapStruct, validation.
+Projet Spring Boot des ateliers ASI 26-27 (Ateliers 3 à 8) : Spring Data JPA, couche Service (IoC/DI),
+API REST + Swagger, patrons GoF (Strategy, Factory, Observer), DTO + MapStruct, validation, Query Methods et JPQL.
 
 ## Démarrage avec XAMPP
 
@@ -31,7 +31,7 @@ API REST + Swagger, patrons GoF (Strategy, Factory, Observer), DTO + MapStruct, 
 ```
 
 MySQL doit être démarré pour les tests `@SpringBootTest` (`AutolocRepositoryTests`, `ServiceTests`,
-`AffectationTests`, `ReservationServiceTest`). `TarificationStrategyFactoryTest`, `NotificationFactoryTest`
+`AffectationTests`, `ReservationServiceTest`, `RequetesTests`). `TarificationStrategyFactoryTest`, `NotificationFactoryTest`
 et `ValidationTests` sont des tests unitaires sans base.
 
 Postman : importer `postman/collections/AutoLoc.postman_collection.json` et
@@ -47,3 +47,4 @@ Postman : importer `postman/collections/AutoLoc.postman_collection.json` et
 | 5 — API REST / Swagger | [docs/api-notes.md](docs/api-notes.md) |
 | 6 — GoF / SOLID | [docs/gof-solid-notes.md](docs/gof-solid-notes.md) |
 | 7 — Affectation / DTO / Validation | [docs/atelier7-notes.md](docs/atelier7-notes.md) |
+| 8 — Query Methods / JPQL | [docs/requetes-notes.md](docs/requetes-notes.md) |
